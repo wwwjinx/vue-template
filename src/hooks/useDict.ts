@@ -1,18 +1,68 @@
 import type { ToRefs } from 'vue'
-import type { DictResult } from '@/api'
+// import type { DictResult } from '@/api'
 import { getDictByTypeApi } from '@/api'
+
+interface DictResult {
+  id: string
+  dictValue: string
+  dictLabel: string
+  [key: string]: any
+}
 
 export interface DictObject {
   list: { value: DictResult['dictValue'], label: DictResult['dictLabel'], [key: string]: any }[]
-  map: Record<string, string | number | boolean>
+  /** dictValue -> dictLabel */
+  valueToLabel: Record<string, string>
+  /** dictLabel -> dictValue */
+  labelToValue: Record<string, DictResult['dictValue']>
 }
 
-type Dict<T extends [...string[]]> = {
+type Dict<T extends string[]> = {
   [K in T[number]]: DictObject
 }
 
-// 字典缓存
-const dictMapCache = new Map<string, DictObject>()
+// 缓存 Promise 而非结果：避免多个组件同时首次请求同一字典时发起重复请求。
+// 模块级单例，若启用 SSR 需改为 request 级隔离，避免跨用户数据污染。
+const dictPromiseCache = new Map<string, Promise<DictObject>>()
+
+function loadDict(dict: string): Promise<DictObject> {
+  const cached = dictPromiseCache.get(dict)
+  if (cached) return cached
+ 
+  const promise = getDictByTypeApi(dict)
+    .then((res: DictResult[]) => deepFreeze(transformDict(res)))
+    .catch((err: unknown) => {
+      // 失败移除缓存，允许后续重试
+      dictPromiseCache.delete(dict)
+      throw err
+    })
+
+  dictPromiseCache.set(dict, promise)
+  return promise
+}
+
+function transformDict(items: DictResult[]): DictObject {
+  const valueToLabel: Record<string, string> = {}
+  const labelToValue: Record<string, DictResult['dictValue']> = {}
+  for (const item of items) {
+    valueToLabel[item.dictValue] = item.dictLabel
+    labelToValue[item.dictLabel] = item.dictValue
+  }
+  return {
+    list: items.map(item => ({ ...item, value: item.dictValue, label: item.dictLabel })),
+    valueToLabel,
+    labelToValue,
+  }
+}
+
+// 字典为只读共享数据，深冻结防止某个组件修改污染全局缓存
+function deepFreeze<T>(obj: T): T {
+  if (obj && typeof obj === 'object') {
+    Object.values(obj as Record<string, unknown>).forEach(deepFreeze)
+    Object.freeze(obj)
+  }
+  return obj
+}
 
 /**
  * 字典hooks
@@ -20,36 +70,20 @@ const dictMapCache = new Map<string, DictObject>()
  */
 export function useDict<T extends string[]>(...dicts: T): ToRefs<Dict<T>> {
   const initvalue = dicts.reduce((prev, item) => {
-    prev[item as T[number]] = { list: [], map: {} }
+    prev[item as T[number]] = { list: [], valueToLabel: {}, labelToValue: {} }
     return prev
   }, {} as Dict<T>)
 
   const dictMap = reactive(initvalue) as Dict<T>
 
   dicts.forEach((dict) => {
-    const dictCache = dictMapCache.get(dict)
-    if (dictCache) {
-      dictMap[dict as T[number]] = dictCache
-    }
-    else {
-      getDictByTypeApi(dict).then((res) => {
-        const dictValue = transformDict(res)
-        dictMap[dict as T[number]] = dictValue
-        dictMapCache.set(dict, dictValue)
+    loadDict(dict)
+      .then(obj => { dictMap[dict as T[number]] = obj })
+      .catch(err => {
+        // 保持空值不阻断渲染；接入错误上报可在此扩展
+        console.warn(`[useDict] 加载字典 "${dict}" 失败:`, err)
       })
-    }
   })
 
   return toRefs(dictMap)
-}
-
-function transformDict(dictValue: DictResult[]): DictObject {
-  return {
-    list: dictValue.map(item => ({ ...item, value: item.dictValue, label: item.dictLabel })),
-    map: dictValue.reduce<DictObject['map']>((prev, item) => {
-      prev[item.dictValue] = item.dictLabel
-      prev[item.dictLabel] = item.dictValue
-      return prev
-    }, {}),
-  }
 }
