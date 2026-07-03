@@ -12,7 +12,6 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.3.1",
     "@vueuse/core": "^14.3.0",
     "alova": "^3.5.1",
     "pinia": "^3.0.4",
@@ -27,7 +26,6 @@
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.5.0",
-    "tailwindcss": "^4.3.1",
     "typescript": "~6.0.3",
     "unocss": "^66.7.3",
     "unplugin-auto-import": "^21.0.0",
