@@ -4,10 +4,7 @@ import { createPersistedState } from 'pinia-plugin-persistedstate' // 数据持�
 const store = createPinia()
 store.use(
   createPersistedState({
-    storage: {
-      getItem: localStorage.getStorageSync,
-      setItem: localStorage.setStorageSync,
-    },
+    storage: localStorage,
   }),
 )
 

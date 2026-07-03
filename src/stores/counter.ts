@@ -22,4 +22,7 @@ export const useCounterStore = defineStore('counter', {
       this.count = 0
     },
   },
+  persist: {
+    storage: localStorage
+  }
 })
