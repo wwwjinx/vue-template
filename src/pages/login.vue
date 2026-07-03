@@ -9,11 +9,7 @@ const form = ref({
 })
 const error = ref('')
 
-function toggleTheme() {
-  const html = document.documentElement
-  const current = html.getAttribute('data-theme')
-  html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark')
-}
+const { toggleTheme } = useTheme()
 
 async function handleLogin() {
   try {
