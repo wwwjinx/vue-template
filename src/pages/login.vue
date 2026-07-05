@@ -30,7 +30,9 @@ async function handleLogin() {
 
     <div class="login-card">
       <div class="header">
-        <h1>欢迎回来</h1>
+        <h1 class="text-red dark:text-blue">
+          欢迎回来
+        </h1>
         <p>请登录您的账号以继续</p>
       </div>
 
