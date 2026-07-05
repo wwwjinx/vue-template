@@ -1,1 +1,6 @@
 @import "./theme-variant.css";
+@import './theme-transition.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
