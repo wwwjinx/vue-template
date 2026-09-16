@@ -1,6 +1,6 @@
 import type { ApiResponse } from './tools/enum'
-import adapterFetch from 'alova/fetch'
 import { createAlova } from 'alova'
+import adapterFetch from 'alova/fetch'
 import vueHook from 'alova/vue'
 import { ContentTypeEnum, ResultEnum, ShowMessage } from './tools/enum'
 
@@ -15,7 +15,7 @@ export const alovaInstance = createAlova({
   beforeRequest: (method) => {
     method.config.headers = {
       'Content-Type': ContentTypeEnum.JSON,
-      Accept: 'application/json, text/plain, */*',
+      'Accept': 'application/json, text/plain, */*',
       ...method.config.headers,
     }
 
@@ -28,10 +28,7 @@ export const alovaInstance = createAlova({
   },
   responded: {
     onSuccess: async (response, method) => {
-      const { config } = method
-      const { requestType } = config
-
-      if (requestType === 'upload' || requestType === 'download') {
+      if (method.meta?.rawResponse === true) {
         return response
       }
 
@@ -53,7 +50,7 @@ export const alovaInstance = createAlova({
             await router.push(loginPath)
           }
         }
-        if (config.meta?.hideNotify !== true) {
+        if (method.meta?.hideNotify !== true) {
           console.error(msg ?? `请求失败 ${code}`)
         }
         throw new Error(`请求失败 ${code}, ${msg}`)

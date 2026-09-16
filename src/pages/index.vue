@@ -6,8 +6,8 @@ const { count, doubleCount } = storeToRefs(CounterStore)
 </script>
 
 <template>
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-gray-800 font-semibold text-2xl mb-4">
+  <div class="mx-auto max-w-3xl">
+    <h2 class="text-2xl text-gray-800 font-semibold mb-4">
       Home Page
     </h2>
     <p class="text-gray-600 leading-relaxed mb-4">
@@ -16,7 +16,7 @@ const { count, doubleCount } = storeToRefs(CounterStore)
     <p class="text-gray-600 leading-relaxed mb-4">
       This is a template project using:
     </p>
-    <ul class="text-gray-600 leading-relaxed ml-6 mb-8 list-disc">
+    <ul class="text-gray-600 leading-relaxed mb-8 ml-6 list-disc">
       <li>Vue 3</li>
       <li>TypeScript</li>
       <li>Vite</li>
@@ -24,8 +24,8 @@ const { count, doubleCount } = storeToRefs(CounterStore)
       <li>Vue Router (File-based Routing)</li>
     </ul>
 
-    <div class="bg-gray-50 p-6 rounded-lg mt-8">
-      <h3 class="text-gray-800 font-medium text-lg mb-4">
+    <div class="mt-8 p-6 rounded-lg bg-gray-50">
+      <h3 class="text-lg text-gray-800 font-medium mb-4">
         Counter Example (Pinia)
       </h3>
       <p class="text-gray-600 mb-2">
@@ -34,14 +34,14 @@ const { count, doubleCount } = storeToRefs(CounterStore)
       <p class="text-gray-600 mb-4">
         Double Count: {{ doubleCount }}
       </p>
-      <div class="flex gap-4 mt-4">
-        <button class="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 transition-colors" @click="CounterStore.increment">
+      <div class="mt-4 flex gap-4">
+        <button class="px-4 py-2 border border-gray-300 rounded-md bg-white transition-colors hover:bg-gray-100" @click="CounterStore.increment">
           Increment
         </button>
-        <button class="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 transition-colors" @click="CounterStore.decrement">
+        <button class="px-4 py-2 border border-gray-300 rounded-md bg-white transition-colors hover:bg-gray-100" @click="CounterStore.decrement">
           Decrement
         </button>
-        <button class="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 transition-colors" @click="CounterStore.reset">
+        <button class="px-4 py-2 border border-gray-300 rounded-md bg-white transition-colors hover:bg-gray-100" @click="CounterStore.reset">
           Reset
         </button>
       </div>

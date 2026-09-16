@@ -1,6 +1,6 @@
 <template>
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-gray-800 font-semibold text-2xl mb-4">
+  <div class="mx-auto max-w-3xl">
+    <h2 class="text-2xl text-gray-800 font-semibold mb-4">
       About Page
     </h2>
     <p class="text-gray-600 leading-relaxed mb-4">

@@ -1,5 +1,5 @@
-import { fileURLToPath, URL } from 'node:url'
 import process from 'node:process'
+import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -57,8 +57,9 @@ export default defineConfig(({ mode }) => {
             },
           },
           assetFileNames: 'assets/[ext]/[name].[hash][extname]',
-          chunkFileNames: 'assets/[ext]/[name].[hash].js',
-          advancedChunks: {
+          chunkFileNames: 'assets/js/[name].[hash].js',
+          entryFileNames: 'assets/js/[name].[hash].js',
+          codeSplitting: {
             groups: [
               { name: 'vue', test: /[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/ },
             ],

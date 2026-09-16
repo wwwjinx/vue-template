@@ -1,8 +1,8 @@
-export enum ContentTypeEnum {
-  JSON = 'application/json;charset=UTF-8',
-  FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8',
-  FORM_DATA = 'multipart/form-data;charset=UTF-8',
-}
+export const ContentTypeEnum = {
+  JSON: 'application/json;charset=UTF-8',
+  FORM_URLENCODED: 'application/x-www-form-urlencoded;charset=UTF-8',
+  FORM_DATA: 'multipart/form-data;charset=UTF-8',
+} as const
 
 export class ApiError extends Error {
   code: number
@@ -26,22 +26,22 @@ export interface ApiResponse<T = unknown> {
   rows?: unknown[]
 }
 
-export enum ResultEnum {
-  Success0 = 0,
-  Success200 = 200,
-  Error = 400,
-  Unauthorized = 401,
-  Forbidden = 403,
-  NotFound = 404,
-  MethodNotAllowed = 405,
-  RequestTimeout = 408,
-  InternalServerError = 500,
-  NotImplemented = 501,
-  BadGateway = 502,
-  ServiceUnavailable = 503,
-  GatewayTimeout = 504,
-  HttpVersionNotSupported = 505,
-}
+export const ResultEnum = {
+  Success0: 0,
+  Success200: 200,
+  Error: 400,
+  Unauthorized: 401,
+  Forbidden: 403,
+  NotFound: 404,
+  MethodNotAllowed: 405,
+  RequestTimeout: 408,
+  InternalServerError: 500,
+  NotImplemented: 501,
+  BadGateway: 502,
+  ServiceUnavailable: 503,
+  GatewayTimeout: 504,
+  HttpVersionNotSupported: 505,
+} as const
 
 /**
  * 根据状态码，生成对应的错误信息
