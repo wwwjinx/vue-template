@@ -5,24 +5,23 @@ export const useCounterStore = defineStore('counter', {
     count: 0,
   }),
   getters: {
-    doubleCount: (state) => state.count * 2,
+    doubleCount: state => state.count * 2,
   },
   actions: {
     increment() {
-      
       this.count++
-      console.log('increment', this.count);
     },
     decrement() {
-      
       this.count--
-      console.log('decrement', this.count);
     },
     reset() {
       this.count = 0
     },
   },
   persist: {
-    storage: localStorage
-  }
+    storage: localStorage,
+  },
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useCounterStore, import.meta.hot))

@@ -4,26 +4,23 @@
  * @param obj 要序列化的对象
  * @returns 序列化后的查询字符串
  */
-export function stringifyQuery(obj: Obj): string {
+export function stringifyQuery(obj: Record<string, unknown> | null | undefined): string {
   if (!obj || typeof obj !== 'object' || Array.isArray(obj))
     return ''
 
   return Object.entries(obj)
-    .filter(([_, value]) => value !== undefined && value !== null)
+    .filter(([, value]) => value !== undefined && value !== null)
     .map(([key, value]) => {
-      // 对键进行编码
       const encodedKey = encodeURIComponent(key)
 
-      // 处理数组类型
       if (Array.isArray(value)) {
         return value
           .filter(item => item !== undefined && item !== null)
-          .map(item => `${encodedKey}=${encodeURIComponent(item)}`)
+          .map(item => `${encodedKey}=${encodeURIComponent(String(item))}`)
           .join('&')
       }
 
-      // 处理基本类型
-      return `${encodedKey}=${encodeURIComponent(value)}`
+      return `${encodedKey}=${encodeURIComponent(String(value))}`
     })
     .join('&')
 }
