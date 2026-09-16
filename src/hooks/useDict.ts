@@ -1,16 +1,9 @@
 import type { ToRefs } from 'vue'
-// import type { DictResult } from '@/api'
+import type { DictResult } from '@/api'
 import { getDictByTypeApi } from '@/api'
 
-interface DictResult {
-  id: string
-  dictValue: string
-  dictLabel: string
-  [key: string]: any
-}
-
 export interface DictObject {
-  list: { value: DictResult['dictValue'], label: DictResult['dictLabel'], [key: string]: any }[]
+  list: { value: DictResult['dictValue'], label: DictResult['dictLabel'], [key: string]: unknown }[]
   /** dictValue -> dictLabel */
   valueToLabel: Record<string, string>
   /** dictLabel -> dictValue */
@@ -27,8 +20,9 @@ const dictPromiseCache = new Map<string, Promise<DictObject>>()
 
 function loadDict(dict: string): Promise<DictObject> {
   const cached = dictPromiseCache.get(dict)
-  if (cached) return cached
- 
+  if (cached)
+    return cached
+
   const promise = getDictByTypeApi(dict)
     .then((res: DictResult[]) => deepFreeze(transformDict(res)))
     .catch((err: unknown) => {
@@ -78,8 +72,8 @@ export function useDict<T extends string[]>(...dicts: T): ToRefs<Dict<T>> {
 
   dicts.forEach((dict) => {
     loadDict(dict)
-      .then(obj => { dictMap[dict as T[number]] = obj })
-      .catch(err => {
+      .then((obj) => { dictMap[dict as T[number]] = obj })
+      .catch((err) => {
         // 保持空值不阻断渲染；接入错误上报可在此扩展
         console.warn(`[useDict] 加载字典 "${dict}" 失败:`, err)
       })

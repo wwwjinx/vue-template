@@ -15,7 +15,7 @@ export default antfu({
     },
   },
   {
-    files: ['*.vue'],
+    files: ['**/*.vue'],
     rules: {
       // vue template标签不自动换行
       'vue/singleline-html-element-content-newline': ['error', {

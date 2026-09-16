@@ -1,19 +1,19 @@
 import { defineStore } from 'pinia'
 
+export type Theme = 'light' | 'dark'
+
 export interface AppStoreState {
-  theme: 'light'| 'dark'
+  theme: Theme
 }
 
 export const useAppStore = defineStore('app', {
   state: (): AppStoreState => ({
-    theme: 'light'
+    theme: 'light',
   }),
-  getters: {
-  },
-  actions: {
-   
-  },
   persist: {
-    storage: localStorage
-  }
+    storage: localStorage,
+  },
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useAppStore, import.meta.hot))

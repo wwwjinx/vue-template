@@ -1,40 +1,33 @@
-type Theme = 'light' | 'dark'
+import type { Theme } from '@/stores/app'
+import { useAppStore } from '@/stores/app'
 
-const STORAGE_KEY = 'theme-preference'
-
-function getInitialTheme(): Theme {
-  const stored = localStorage.getItem(STORAGE_KEY)
-  if (stored === 'light' || stored === 'dark') return stored
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
-function applyTheme(t: Theme) {
+function applyTheme(theme: Theme) {
   const html = document.documentElement
-  html.setAttribute('data-theme', t)
-  html.classList.toggle('dark', t === 'dark')
+  html.setAttribute('data-theme', theme)
+  html.classList.toggle('dark', theme === 'dark')
 }
 
-const theme = ref<Theme>(getInitialTheme())
-
-applyTheme(theme.value)
+let started = false
 
 export function useTheme() {
-  watchEffect(() => {
-    applyTheme(theme.value)
-    localStorage.setItem(STORAGE_KEY, theme.value)
-  })
+  const appStore = useAppStore()
 
-  function toggleTheme() {
-    theme.value = theme.value === 'dark' ? 'light' : 'dark'
+  if (!started) {
+    started = true
+    watch(() => appStore.theme, applyTheme, { immediate: true })
   }
 
-  function setTheme(t: Theme) {
-    theme.value = t
+  function toggleTheme() {
+    appStore.theme = appStore.theme === 'dark' ? 'light' : 'dark'
+  }
+
+  function setTheme(theme: Theme) {
+    appStore.theme = theme
   }
 
   return {
-    theme: computed(() => theme.value),
-    isDark: computed(() => theme.value === 'dark'),
+    theme: computed(() => appStore.theme),
+    isDark: computed(() => appStore.theme === 'dark'),
     toggleTheme,
     setTheme,
   }

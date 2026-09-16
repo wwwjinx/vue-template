@@ -1,26 +1,14 @@
-export enum ResultEnum {
-  // 0和200当做成功都很普遍，这里直接兼容两者（PS：0和200通常都不会当做错误码，但是有的接口会返回0，有的接口会返回200）
-  Success0 = 0, // 成功
-  Success200 = 200, // 成功
-  Error = 400, // 错误
-  Unauthorized = 401, // 未授权
-  Forbidden = 403, // 禁止访问（原为forbidden）
-  NotFound = 404, // 未找到（原为notFound）
-  MethodNotAllowed = 405, // 方法不允许（原为methodNotAllowed）
-  RequestTimeout = 408, // 请求超时（原为requestTimeout）
-  InternalServerError = 500, // 服务器错误（原为internalServerError）
-  NotImplemented = 501, // 未实现（原为notImplemented）
-  BadGateway = 502, // 网关错误（原为badGateway）
-  ServiceUnavailable = 503, // 服务不可用（原为serviceUnavailable）
-  GatewayTimeout = 504, // 网关超时（原为gatewayTimeout）
-  HttpVersionNotSupported = 505, // HTTP版本不支持（原为httpVersionNotSupported）
-}
-// 自定义 API 错误类
+export const ContentTypeEnum = {
+  JSON: 'application/json;charset=UTF-8',
+  FORM_URLENCODED: 'application/x-www-form-urlencoded;charset=UTF-8',
+  FORM_DATA: 'multipart/form-data;charset=UTF-8',
+} as const
+
 export class ApiError extends Error {
   code: number
-  data?: any
+  data?: unknown
 
-  constructor(message: string, code: number, data?: any) {
+  constructor(message: string, code: number, data?: unknown) {
     super(message)
     this.name = 'ApiError'
     this.code = code
@@ -28,69 +16,63 @@ export class ApiError extends Error {
   }
 }
 
-// API 响应结构类型
-export interface ApiResponse {
+export interface ApiResponse<T = unknown> {
   code: number
   msg?: string
-  data?: any
+  data?: T
   success?: boolean
   total?: number
   more?: boolean
-  rows?: any[]
+  rows?: unknown[]
 }
 
-export interface RequestSuccessCallbackResult extends UniApp.RequestSuccessCallbackResult {
-  data: ApiResponse
-}
+export const ResultEnum = {
+  Success0: 0,
+  Success200: 200,
+  Error: 400,
+  Unauthorized: 401,
+  Forbidden: 403,
+  NotFound: 404,
+  MethodNotAllowed: 405,
+  RequestTimeout: 408,
+  InternalServerError: 500,
+  NotImplemented: 501,
+  BadGateway: 502,
+  ServiceUnavailable: 503,
+  GatewayTimeout: 504,
+  HttpVersionNotSupported: 505,
+} as const
 
-export enum ContentTypeEnum {
-  JSON = 'application/json;charset=UTF-8',
-  FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8',
-  FORM_DATA = 'multipart/form-data;charset=UTF-8',
-}
 /**
  * 根据状态码，生成对应的错误信息
  * @param {number|string} status 状态码
  * @returns {string} 错误信息
  */
 export function ShowMessage(status: number | string): string {
-  let message: string
   switch (status) {
     case 400:
-      message = '请求错误(400)'
-      break
+      return '请求错误(400)'
     case 401:
-      message = '未授权，请重新登录(401)'
-      break
+      return '未授权，请重新登录(401)'
     case 403:
-      message = '拒绝访问(403)'
-      break
+      return '拒绝访问(403)'
     case 404:
-      message = '请求出错(404)'
-      break
+      return '请求出错(404)'
     case 408:
-      message = '请求超时(408)'
-      break
+      return '请求超时(408)'
     case 500:
-      message = '服务器错误(500)'
-      break
+      return '服务器错误(500)'
     case 501:
-      message = '服务未实现(501)'
-      break
+      return '服务未实现(501)'
     case 502:
-      message = '网络错误(502)'
-      break
+      return '网络错误(502)'
     case 503:
-      message = '服务不可用(503)'
-      break
+      return '服务不可用(503)'
     case 504:
-      message = '网络超时(504)'
-      break
+      return '网络超时(504)'
     case 505:
-      message = 'HTTP版本不受支持(505)'
-      break
+      return 'HTTP版本不受支持(505)'
     default:
-      message = `连接出错(${status})!`
+      return `连接出错(${status})!`
   }
-  return `${message}，请检查网络或联系管理员！`
 }

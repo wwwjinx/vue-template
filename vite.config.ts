@@ -1,5 +1,5 @@
-import path from 'node:path'
 import process from 'node:process'
+import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
       vue(),
       AutoImport({
         imports: ['vue', 'vue-router', 'pinia'],
-        dirs: ['src/hooks', 'src/utils', 'src/store'], // 自动导入 hooks, utils 目录下的文件
+        dirs: ['src/hooks', 'src/utils'],
         dts: 'src/types/auto-imports.d.ts',
         vueTemplate: true,
         vueDirectives: true,
@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
     build: {
@@ -57,11 +57,11 @@ export default defineConfig(({ mode }) => {
             },
           },
           assetFileNames: 'assets/[ext]/[name].[hash][extname]',
-          chunkFileNames: 'assets/[ext]/[name].[hash].js',
-          advancedChunks: {
+          chunkFileNames: 'assets/js/[name].[hash].js',
+          entryFileNames: 'assets/js/[name].[hash].js',
+          codeSplitting: {
             groups: [
               { name: 'vue', test: /[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/ },
-              { name: 'lodash', test: /[\\/]node_modules[\\/](lodash-es)[\\/]/ },
             ],
           },
         },

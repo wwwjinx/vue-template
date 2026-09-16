@@ -1,61 +1,64 @@
-import type { ApiResponse, RequestSuccessCallbackResult } from './tools/enum'
-
-import adapterFetch from 'alova/fetch';
+import type { ApiResponse } from './tools/enum'
 import { createAlova } from 'alova'
+import adapterFetch from 'alova/fetch'
 import vueHook from 'alova/vue'
 import { ContentTypeEnum, ResultEnum, ShowMessage } from './tools/enum'
 
-export const baseURL = import.meta.env.BASE_URL
+export const baseURL = import.meta.env.VITE_BASE_URL || ''
 
 export const alovaInstance = createAlova({
   baseURL,
   requestAdapter: adapterFetch(),
   statesHook: vueHook,
+  timeout: 20000,
+  cacheFor: null,
   beforeRequest: (method) => {
     method.config.headers = {
-      ContentType: ContentTypeEnum.JSON,
-      Accept: 'application/json, text/plain, */*',
+      'Content-Type': ContentTypeEnum.JSON,
+      'Accept': 'application/json, text/plain, */*',
       ...method.config.headers,
     }
 
     if (method.meta?.ignoreAuth !== true) {
       const { token } = useToken()
-
-      method.config.headers.Authorization = `Bearer ${token}`
+      if (token.value) {
+        method.config.headers.Authorization = `Bearer ${token.value}`
+      }
     }
   },
-  responded: (response, method) => {
-    const { config } = method
-    const { requestType } = config
-
-    const { error } = useGlobalNotify()
-    const { statusCode, data } = response as RequestSuccessCallbackResult
-
-    if (requestType === 'upload' || requestType === 'download') {
-      return response
-    }
-
-    if (statusCode !== 200) {
-      const errorMessage = ShowMessage(statusCode) || `HTTP请求错误[${statusCode}]`
-      error(`请求失败, ${errorMessage}`)
-      throw new Error(`${errorMessage}`)
-    }
-
-    const { code, msg, data: rawData } = data as ApiResponse
-    if (code !== ResultEnum.Success0 && code !== ResultEnum.Success200) {
-      if (code === ResultEnum.Unauthorized && useCurrentPath() !== import.meta.env.VITE_LOGIN_URL) {
-        uni.reLaunch({ url: import.meta.env.VITE_LOGIN_URL })
+  responded: {
+    onSuccess: async (response, method) => {
+      if (method.meta?.rawResponse === true) {
+        return response
       }
-      if (config.meta?.hideNotify !== true) {
-        error(`${data.msg}`)
-      }
-      throw new Error(`请求失败 ${code}, ${data.msg}`)
-    }
 
-    return (method.meta?.originalRes ? data : rawData) as ApiResponse
+      if (!response.ok) {
+        const errorMessage = ShowMessage(response.status) || `HTTP请求错误[${response.status}]`
+        console.error(`请求失败, ${errorMessage}`)
+        throw new Error(errorMessage)
+      }
+
+      const data = await response.json() as ApiResponse
+      const { code, msg, data: rawData } = data
+
+      if (code !== ResultEnum.Success0 && code !== ResultEnum.Success200) {
+        if (code === ResultEnum.Unauthorized) {
+          useToken().removeToken()
+          const { default: router } = await import('@/router')
+          const loginPath = import.meta.env.VITE_LOGIN_URL || '/login'
+          if (router.currentRoute.value.path !== loginPath) {
+            await router.push(loginPath)
+          }
+        }
+        if (method.meta?.hideNotify !== true) {
+          console.error(msg ?? `请求失败 ${code}`)
+        }
+        throw new Error(`请求失败 ${code}, ${msg}`)
+      }
+
+      return (method.meta?.originalRes ? data : rawData) as ApiResponse
+    },
   },
-  timeout: 20000,
-  cacheFor: null,
 })
 
 /** 兼容上游命名风格 */
