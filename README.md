@@ -11,9 +11,9 @@
 - **路由**: Vue Router 5 文件-based 路由（`vue-router/vite`）
 - **请求**: Alova 3 + Fetch
 - **原子化 CSS**: UnoCSS
-- **工具库**: @vueuse/core
+- **工具库**: @vueuse/core 15
 - **包管理器**: pnpm 10
-- **Node.js**: `^20.19.0 || >=22.12.0`（Vite 8 要求）
+- **Node.js**: `>=22.12.0`（Vite 8 与 VueUse 15 要求；Node 20 已停止维护）
 
 ## 目录结构
 
@@ -54,7 +54,7 @@ vue-template/
 
 ## 安装与使用
 
-需要 Node.js 20.19+ 或 22.12+。
+需要 Node.js 22.12 或更高版本。
 
 ### 安装依赖
 
