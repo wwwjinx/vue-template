@@ -12,6 +12,7 @@ export default antfu({
       'no-console': 'off',
       // 关闭，可使 对象/数组 自由换行
       'antfu/consistent-list-newline': 'off',
+      'antfu/reasonable-newline': 'off',
     },
   },
   {

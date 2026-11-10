@@ -8,7 +8,7 @@ const router = createRouter({
 
 const whitePath = [import.meta.env.VITE_LOGIN_URL]
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   if (whitePath.includes(to.path)) {
     next()
   }
