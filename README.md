@@ -9,7 +9,7 @@
 - **语言**: TypeScript 6（暂不升级 TypeScript 7：`vue-tsc` 仍依赖 TS 6 的编译器 API）
 - **状态管理**: Pinia 4
 - **路由**: Vue Router 5 文件-based 路由（`vue-router/vite`）
-- **请求**: Alova 3 + Fetch
+- **请求**: Axios（`src/utils/request`）
 - **原子化 CSS**: UnoCSS
 - **工具库**: @vueuse/core 15
 - **包管理器**: pnpm 10
