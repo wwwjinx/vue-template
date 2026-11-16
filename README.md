@@ -1,6 +1,6 @@
-# Vue Template
+# Vue 模板
 
-基于 Vue 3 的前端项目模板，使用 TypeScript、Vite、Pinia 和文件-based 路由。
+基于 Vue 3 的前端项目模板，使用 TypeScript、Vite、Pinia 和基于文件的路由。
 
 ## 技术栈
 
@@ -8,7 +8,7 @@
 - **构建工具**: Vite 8 (Rolldown)
 - **语言**: TypeScript 6（暂不升级 TypeScript 7：`vue-tsc` 仍依赖 TS 6 的编译器 API）
 - **状态管理**: Pinia 4
-- **路由**: Vue Router 5 文件-based 路由（`vue-router/vite`）
+- **路由**: Vue Router 5 基于文件的路由（`vue-router/vite`）
 - **请求**: Axios（`src/utils/request`）
 - **原子化 CSS**: UnoCSS
 - **工具库**: @vueuse/core 15
@@ -25,7 +25,7 @@ vue-template/
 │   ├── assets/           # 资源文件目录
 │   ├── components/       # 组件目录
 │   ├── hooks/            # 组合式函数
-│   ├── pages/            # 页面目录（文件-based 路由）
+│   ├── pages/            # 页面目录（基于文件的路由）
 │   │   ├── index.vue     # 首页
 │   │   ├── about.vue     # 关于页面
 │   │   └── login.vue     # 登录示例
@@ -45,7 +45,7 @@ vue-template/
 
 ## 路由系统
 
-本项目使用 **Vue Router** 内置的文件-based 路由，路由规则如下：
+本项目使用 **Vue Router** 内置的基于文件的路由，路由规则如下：
 
 - 路由文件存放在 `src/pages` 目录下
 - 文件路径自动映射为路由路径

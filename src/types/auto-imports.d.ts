@@ -8,9 +8,13 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const ALL_PERMISSION: typeof import('../utils/auth').ALL_PERMISSION
   const EffectScope: typeof import('vue').EffectScope
+  const HOME_ROUTE: typeof import('../utils/menuPath').HOME_ROUTE
+  const SUPER_ROLE: typeof import('../utils/auth').SUPER_ROLE
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
+  const confirm: typeof import('../utils/confirm').confirm
   const createApp: typeof import('vue').createApp
   const createPinia: typeof import('pinia').createPinia
   const customRef: typeof import('vue').customRef
@@ -18,12 +22,19 @@ declare global {
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
   const effectScope: typeof import('vue').effectScope
+  const findViewByPath: typeof import('../utils/menuPath').findViewByPath
+  const flattenViews: typeof import('../utils/menuPath').flattenViews
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const getToken: typeof import('../utils/handleToken').getToken
   const h: typeof import('vue').h
+  const handleTree: typeof import('../utils/tree').handleTree
+  const hasPermission: typeof import('../utils/auth').hasPermission
+  const hasRole: typeof import('../utils/auth').hasRole
   const inject: typeof import('vue').inject
+  const isExternal: typeof import('../utils/validate').isExternal
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
   const isReadonly: typeof import('vue').isReadonly
@@ -56,12 +67,16 @@ declare global {
   const reactive: typeof import('vue').reactive
   const readonly: typeof import('vue').readonly
   const ref: typeof import('vue').ref
+  const removeToken: typeof import('../utils/handleToken').removeToken
   const resolveComponent: typeof import('vue').resolveComponent
+  const resolveMenuPath: typeof import('../utils/menuPath').resolveMenuPath
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
+  const setToken: typeof import('../utils/handleToken').setToken
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
+  const showingChildren: typeof import('../utils/menuPath').showingChildren
   const storeToRefs: typeof import('pinia').storeToRefs
   const toRaw: typeof import('vue').toRaw
   const toRef: typeof import('vue').toRef
@@ -95,6 +110,9 @@ declare global {
   // @ts-ignore
   export type { DictObject } from '../hooks/useDict'
   import('../hooks/useDict')
+  // @ts-ignore
+  export type { ResolvedView } from '../utils/menuPath'
+  import('../utils/menuPath')
 }
 
 // for vue template auto import
@@ -102,9 +120,13 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
+    readonly ALL_PERMISSION: UnwrapRef<typeof import('../utils/auth')['ALL_PERMISSION']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly HOME_ROUTE: UnwrapRef<typeof import('../utils/menuPath')['HOME_ROUTE']>
+    readonly SUPER_ROLE: UnwrapRef<typeof import('../utils/auth')['SUPER_ROLE']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
+    readonly confirm: UnwrapRef<typeof import('../utils/confirm')['confirm']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly createPinia: UnwrapRef<typeof import('pinia')['createPinia']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
@@ -112,12 +134,19 @@ declare module 'vue' {
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly findViewByPath: UnwrapRef<typeof import('../utils/menuPath')['findViewByPath']>
+    readonly flattenViews: UnwrapRef<typeof import('../utils/menuPath')['flattenViews']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
+    readonly getToken: UnwrapRef<typeof import('../utils/handleToken')['getToken']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
+    readonly handleTree: UnwrapRef<typeof import('../utils/tree')['handleTree']>
+    readonly hasPermission: UnwrapRef<typeof import('../utils/auth')['hasPermission']>
+    readonly hasRole: UnwrapRef<typeof import('../utils/auth')['hasRole']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
+    readonly isExternal: UnwrapRef<typeof import('../utils/validate')['isExternal']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
@@ -150,12 +179,16 @@ declare module 'vue' {
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
+    readonly removeToken: UnwrapRef<typeof import('../utils/handleToken')['removeToken']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly resolveMenuPath: UnwrapRef<typeof import('../utils/menuPath')['resolveMenuPath']>
     readonly setActivePinia: UnwrapRef<typeof import('pinia')['setActivePinia']>
     readonly setMapStoreSuffix: UnwrapRef<typeof import('pinia')['setMapStoreSuffix']>
+    readonly setToken: UnwrapRef<typeof import('../utils/handleToken')['setToken']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly showingChildren: UnwrapRef<typeof import('../utils/menuPath')['showingChildren']>
     readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>

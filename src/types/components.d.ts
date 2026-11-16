@@ -11,6 +11,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    InnerLink: typeof import('./../components/InnerLink/index.vue')['default']
+    MenuIcon: typeof import('./../components/MenuIcon/index.vue')['default']
+    ParentView: typeof import('./../components/ParentView/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
