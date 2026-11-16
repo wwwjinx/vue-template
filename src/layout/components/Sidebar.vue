@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { usePermissionStore } from '@/stores/permission'
+import SidebarItem from './SidebarItem.vue'
 
 defineProps<{
   collapse: boolean

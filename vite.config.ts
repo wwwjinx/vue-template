@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig, loadEnv } from 'vite'
 import VueRouter from 'vue-router/vite'
@@ -38,13 +39,14 @@ export default defineConfig(({ mode }) => {
         imports: ['vue', 'vue-router', 'pinia'],
         dirs: ['src/hooks', 'src/utils'],
         dts: 'src/types/auto-imports.d.ts',
+        resolvers: [ElementPlusResolver()],
         vueTemplate: true,
         vueDirectives: true,
       }),
       Components({
         dirs: ['src/components'],
         directoryAsNamespace: false, // 是否把目录名作为命名空间前缀，true 时组件名为 目录名+组件名，
-
+        resolvers: [ElementPlusResolver()],
         dts: 'src/types/components.d.ts',
       }),
     ],
