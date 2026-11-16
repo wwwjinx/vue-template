@@ -4,7 +4,7 @@ export interface ThemeState {
   theme: Theme
 }
 
-export const STORAGE_KEY = import.meta.env.VITE_STORAGE_KEY
+export const STORAGE_KEY = import.meta.env.VITE_THEME_STORAGE_KEY
 
 function getInitialTheme(): Theme {
   const stored = localStorage.getItem(STORAGE_KEY)

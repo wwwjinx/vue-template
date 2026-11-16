@@ -1,20 +1,11 @@
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import type { ApiResponse } from './tools/enum'
+import type { ApiResponse, RequestMeta } from './tools/enum'
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 import { useToken } from '@/hooks/useToken'
 import { ContentTypeEnum, ResultEnum, ShowMessage } from './tools/enum'
 
-export interface RequestMeta {
-  /** 是否返回完整业务包（默认只返回 data） */
-  originalRes?: boolean
-  /** 是否不携带 token */
-  ignoreAuth?: boolean
-  /** 是否不打印失败提示 */
-  hideNotify?: boolean
-  /** 是否直接返回 AxiosResponse */
-  rawResponse?: boolean
-  resType?: 'json' | 'blob' | 'text'
-}
+export type { RequestMeta }
 
 export interface RequestConfig extends AxiosRequestConfig {
   meta?: RequestMeta
@@ -26,10 +17,10 @@ interface InterceptorsResponse extends AxiosResponse {
   config: InterceptorsConfig
 }
 
-export const baseURL = import.meta.env.VITE_BASE_URL || ''
+export const baseURL = import.meta.env.DEV ? '/api' : (import.meta.env.VITE_BASE_URL || '/api')
 
 function shouldAttachToken(config: RequestConfig): boolean {
-  if (config.meta?.ignoreAuth === true )
+  if (config.meta?.ignoreAuth === true)
     return false
   return true
 }
@@ -82,13 +73,18 @@ axiosInstance.interceptors.response.use(
     if (code !== ResultEnum.Success0 && code !== ResultEnum.Success200) {
       if (code === ResultEnum.Unauthorized) {
         useToken().removeToken()
+        const { useUserStore } = await import('@/stores/user')
+        useUserStore().resetState()
         const { default: router } = await import('@/router')
         const loginPath = import.meta.env.VITE_LOGIN_URL || '/login'
         if (router.currentRoute.value.path !== loginPath)
           await router.push(loginPath)
       }
-      if (shouldNotify(response.config))
-        console.error(msg ?? `请求失败 ${code}`)
+      if (shouldNotify(response.config)) {
+        const message = msg ?? `请求失败 ${code}`
+        console.error(message)
+        ElMessage.error(message)
+      }
       throw new Error(`请求失败 ${code}, ${msg}`)
     }
 

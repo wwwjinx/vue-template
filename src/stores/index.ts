@@ -12,3 +12,5 @@ export default store
 
 export * from './app'
 export * from './counter'
+export * from './permission'
+export * from './user'

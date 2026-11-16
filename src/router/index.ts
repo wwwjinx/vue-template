@@ -1,35 +1,22 @@
+import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
-import { handleHotUpdate, routes } from 'vue-router/auto-routes'
+import { routes as autoRoutes, handleHotUpdate } from 'vue-router/auto-routes'
+import { setupRouterGuard } from '@/router/guard'
+import { constantLayoutRoutes, hiddenConstantRoutes } from '@/router/routes'
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: [
+    ...autoRoutes,
+    ...(constantLayoutRoutes as RouteRecordRaw[]),
+    ...hiddenConstantRoutes,
+  ],
+  scrollBehavior: () => ({ top: 0 }),
 })
 
-const whitePath = [import.meta.env.VITE_LOGIN_URL]
-
-router.beforeEach((to, _from, next) => {
-  if (whitePath.includes(to.path)) {
-    next()
-  }
-  else {
-    const { token } = useToken()
-
-    if (token) {
-      next()
-    }
-    else {
-      next({
-        path: import.meta.env.VITE_LOGIN_URL,
-        replace: true,
-      })
-    }
-  }
-})
+setupRouterGuard(router)
 
 export default router
 
-// 这将在运行时更新路由而无需重新加载页面
-if (import.meta.hot) {
+if (import.meta.hot)
   handleHotUpdate(router)
-}

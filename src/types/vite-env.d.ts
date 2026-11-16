@@ -11,10 +11,13 @@ interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
   readonly VITE_BASE: string
   readonly VITE_BASE_URL: string
+  readonly VITE_PROXY_URL: string
 
   readonly VITE_LOGIN_URL: string
 
-  readonly VITE_STORAGE_KEY: string
+  readonly VITE_TOKEN_KEY: string
+
+  readonly VITE_THEME_STORAGE_KEY: string
 }
 
 interface ImportMeta {

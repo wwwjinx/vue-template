@@ -1,75 +1,68 @@
 <script setup lang="ts">
-const router = useRouter()
-const form = ref({
-  email: '',
-  password: '',
-})
-const error = ref('')
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 
+const router = useRouter()
+const route = useRoute()
+const userStore = useUserStore()
 const { toggleTheme } = useTheme()
 
+const formRef = ref<FormInstance>()
+const loading = ref(false)
+const form = reactive({
+  username: '',
+  password: '',
+})
+const rules: FormRules = {
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+}
+
 async function handleLogin() {
+  const valid = await formRef.value?.validate().catch(() => false)
+  if (!valid)
+    return
+  loading.value = true
   try {
-    error.value = ''
-    console.log('Login attempt:', form.value)
-    await new Promise(resolve => setTimeout(resolve, 500))
-    router.push('/')
+    await userStore.login(form.username, form.password)
+    ElMessage.success('登录成功')
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+    await router.push(redirect)
   }
   catch (err) {
-    error.value = '登录失败，请检查您的凭据。'
-    console.error('Login error:', err)
+    ElMessage.error(err instanceof Error ? err.message : '登录失败')
+  }
+  finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
   <div class="login-wrapper">
-    <button class="theme-toggle" @click="toggleTheme">
-      切换模式 (Light/Dark)
-    </button>
-
-    <div class="login-card">
-      <div class="header">
-        <h1 class="text-red dark:text-blue">
-          欢迎回来
-        </h1>
-        <p>请登录您的账号以继续</p>
-      </div>
-
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label>电子邮箱</label>
-          <input
-            v-model="form.email"
-            type="email"
-            placeholder="email@example.com"
-            required
-          >
-        </div>
-
-        <div class="form-group">
-          <label>密码</label>
-          <input
-            v-model="form.password"
-            type="password"
-            placeholder="••••••••"
-            required
-          >
-        </div>
-
-        <p v-if="error" class="error-msg">
-          {{ error }}
-        </p>
-
-        <button type="submit" class="btn-primary btn">
+    <ElButton class="theme-toggle" text @click="toggleTheme">
+      切换模式
+    </ElButton>
+    <ElCard class="login-card" shadow="always">
+      <h1 class="title">
+        欢迎回来
+      </h1>
+      <p class="subtitle">
+        请登录账号以继续
+      </p>
+      <ElForm ref="formRef" :model="form" :rules="rules" @submit.prevent="handleLogin">
+        <ElFormItem prop="username">
+          <ElInput v-model="form.username" placeholder="用户名" size="large" />
+        </ElFormItem>
+        <ElFormItem prop="password">
+          <ElInput v-model="form.password" type="password" show-password placeholder="密码" size="large" @keyup.enter="handleLogin" />
+        </ElFormItem>
+        <ElButton type="primary" size="large" class="submit" :loading="loading" @click="handleLogin">
           登 录
-        </button>
-      </form>
-
-      <div class="footer">
-        还没有账号？ <a href="#">立即注册</a>
-      </div>
-    </div>
+        </ElButton>
+      </ElForm>
+    </ElCard>
   </div>
 </template>
 
@@ -80,126 +73,28 @@ async function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-page);
-  color: var(--text-main);
-  font-family: var(--font-main);
-  transition: var(--transition);
+  background-color: var(--bg-page, var(--el-bg-color-page));
 }
-
 .login-card {
-  background: var(--bg-card);
-  padding: 40px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
   width: 100%;
-  max-width: 520px;
-  transition: var(--transition);
+  max-width: 420px;
 }
-
-.header {
-  margin-bottom: 32px;
+.title {
+  margin: 0 0 8px;
   text-align: center;
-}
-
-.header h1 {
   font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 8px;
 }
-
-.header p {
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-main);
-  font-size: 15px;
-  transition: var(--transition);
-  outline: none;
-}
-
-.form-group input:focus {
-  border-color: var(--input-focus);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--input-focus) 20%, transparent);
-}
-
-.error-msg {
-  color: #dc2626;
+.subtitle {
+  margin: 0 0 24px;
   text-align: center;
-  font-size: 14px;
-  margin-top: 8px;
+  color: var(--el-text-color-secondary);
 }
-
-.btn {
+.submit {
   width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  margin-top: 10px;
 }
-
-.btn-primary {
-  background: var(--primary-btn-bg);
-  color: var(--primary-btn-text);
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.footer {
-  margin-top: 24px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.footer a {
-  color: var(--text-main);
-  text-decoration: none;
-  font-weight: 600;
-}
-
 .theme-toggle {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 8px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  cursor: pointer;
-  color: var(--text-main);
-  font-size: 12px;
-  transition: var(--transition);
-  z-index: 100;
+  top: 16px;
+  right: 16px;
 }
 </style>

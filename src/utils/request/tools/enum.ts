@@ -26,6 +26,22 @@ export interface ApiResponse<T = unknown> {
   rows?: unknown[]
 }
 
+export interface RequestMeta {
+  /** 是否返回完整业务包（默认只返回 data） */
+  originalRes?: boolean
+  /** 是否不携带 token */
+  ignoreAuth?: boolean
+  /** 是否不打印失败提示 */
+  hideNotify?: boolean
+  /** 是否直接返回 AxiosResponse */
+  rawResponse?: boolean
+  /**
+   * 返回值类型
+   * @default json
+   */
+  resType?: 'json' | 'blob' | 'text'
+}
+
 export const ResultEnum = {
   Success0: 0,
   Success200: 200,
