@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import Navbar from './components/Navbar.vue'
+import Sidebar from './components/Sidebar.vue'
+
 const collapse = ref(false)
 </script>
 
@@ -21,23 +24,28 @@ const collapse = ref(false)
   display: flex;
   min-height: 100%;
   width: 100%;
+  background: var(--bg-page-gradient, var(--bg-page));
 }
+
 .sidebar-container {
-  width: 210px;
+  width: var(--sidebar-width, 230px);
   flex-shrink: 0;
   transition: width 0.2s;
   overflow: hidden;
 }
+
 .collapsed .sidebar-container {
-  width: 64px;
+  width: var(--sidebar-collapsed-width, 64px);
 }
+
 .main-container {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background: var(--el-bg-color-page, #f5f7fa);
+  background: transparent;
 }
+
 .app-main {
   flex: 1;
   padding: 16px;

@@ -26,9 +26,6 @@ const activeMenu = computed(() => {
         :collapse="collapse"
         :unique-opened="true"
         router
-        background-color="#1f2d3d"
-        text-color="#bfcbd9"
-        active-text-color="#409eff"
       >
         <SidebarItem
           v-for="item in permissionStore.sidebarRouters"
@@ -46,24 +43,72 @@ const activeMenu = computed(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #1f2d3d;
-  color: #bfcbd9;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: var(--sidebar-shadow);
 }
+
 .logo {
-  height: 50px;
+  height: var(--topbar-height);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: #fff;
-  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  color: var(--sidebar-active-text);
+  border-bottom: 1px solid var(--sidebar-logo-border);
   flex-shrink: 0;
 }
-.sidebar :deep(.el-menu) {
-  border-right: none;
-}
+
 .sidebar :deep(.el-scrollbar) {
   flex: 1;
+}
+
+.sidebar :deep(.el-menu) {
+  border-right: none;
+  background: var(--sidebar-bg);
+  --el-menu-bg-color: var(--sidebar-bg);
+  --el-menu-text-color: var(--sidebar-text);
+  --el-menu-hover-bg-color: var(--sidebar-hover-bg);
+  --el-menu-active-color: var(--sidebar-active-text);
+  --el-menu-item-height: 40px;
+}
+
+.sidebar :deep(.el-sub-menu__title) {
+  height: 46px;
+  line-height: 46px;
+  color: var(--sidebar-title);
+  font-size: 14px;
+  border-left: 3px solid transparent;
+}
+
+.sidebar :deep(.el-sub-menu__title:hover) {
+  color: var(--sidebar-hover-text) !important;
+  background: var(--sidebar-submenu-hover-bg) !important;
+}
+
+.sidebar :deep(.el-menu-item) {
+  height: 40px;
+  line-height: 40px;
+  font-size: 13px;
+  color: var(--sidebar-text);
+  border-left: 3px solid transparent;
+}
+
+.sidebar :deep(.el-menu-item:hover) {
+  color: var(--sidebar-hover-text) !important;
+  background: var(--sidebar-hover-bg) !important;
+}
+
+.sidebar :deep(.el-menu-item.is-active) {
+  color: var(--sidebar-active-text) !important;
+  font-weight: 700;
+  background: var(--sidebar-active-bg) !important;
+  border-left-color: var(--primary-color);
+}
+
+.sidebar :deep(.el-sub-menu .el-menu) {
+  background: var(--sidebar-bg);
 }
 </style>
